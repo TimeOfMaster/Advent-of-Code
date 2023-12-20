@@ -24,17 +24,17 @@ class Graph:
 graph = Graph()
 
 def bfs(start):
-    dist = {start: 0}
-    q = Queue()
-    q.put(start)
-    while not q.empty():
-        current = q.get()
+    distance = {start: 0}
+    queue = Queue()
+    queue.put(start)
+    while not queue.empty():
+        current = queue.get()
         for nbr in graph.edges[current]:
-            if nbr in dist:
+            if nbr in distance:
                 continue
-            dist[nbr] = dist[current]+1
-            q.put(nbr)
-    return dist
+            distance[nbr] = distance[current]+1
+            queue.put(nbr)
+    return distance
 
 with open(input_path, 'r') as f:
     for i, line in enumerate(f.readlines()):
@@ -71,9 +71,9 @@ for delta in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
 
 def is_inside(pos, loop):
     crosses = 0
-    for j in range(pos.c + 1, m+1):
+    for j in range(pos.c + 1, m + 1):
         new_pos = Position(pos.r, j)
-        last_pos = Position(pos.r, j-1)
+        last_pos = Position(pos.r, j - 1)
         if new_pos in loop and last_pos in loop and new_pos in graph.edges[last_pos]:
             continue
         if last_pos in loop:
@@ -81,9 +81,9 @@ def is_inside(pos, loop):
             edge_up = False
             edge_down = False
             for node in [entered, exited]:
-                if Position(node.r-1, node.c) in graph.edges[node]:
+                if Position(node.r - 1, node.c) in graph.edges[node]:
                     edge_up = True
-                if Position(node.r+1, node.c) in graph.edges[node]:
+                if Position(node.r + 1, node.c) in graph.edges[node]:
                     edge_down = True
             if edge_up and edge_down:
                 crosses += 1

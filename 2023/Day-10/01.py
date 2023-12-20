@@ -24,17 +24,17 @@ class Graph:
 graph = Graph()
 
 def bfs(start):
-    dist = {start: 0}
-    q = Queue()
-    q.put(start)
-    while not q.empty():
-        current = q.get()
+    distance = {start: 0}
+    queue = Queue()
+    queue.put(start)
+    while not queue.empty():
+        current = queue.get()
         for nbr in graph.edges[current]:
-            if nbr in dist:
+            if nbr in distance:
                 continue
-            dist[nbr] = dist[current]+1
-            q.put(nbr)
-    return dist
+            distance[nbr] = distance[current]+1
+            queue.put(nbr)
+    return distance
 
 with open(input_path, 'r') as f:
     for i, line in enumerate(f.readlines()):
@@ -60,8 +60,8 @@ with open(input_path, 'r') as f:
             elif char == 'F':
                 graph.add_edge(pos, Position(i, j+1))
                 graph.add_edge(pos, Position(i+1, j))
-        m = j+1
-    n = i+1
+        m = j + 1
+    n = i + 1
     
 for delta in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
     dr, dc, = delta
