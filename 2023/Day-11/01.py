@@ -58,14 +58,9 @@ for row in range(grid.height()):
         if grid.get(row, col) == '#':
             galaxies.append((row, col))
 
-total1 = 0
-total2 = 0
+total = 0
 for i1, j1 in galaxies:
     for i2, j2 in galaxies:
-        total1 += grid.distance(i1, j1, i2, j2, 2)
-        total2 += grid.distance(i1, j1, i2, j2, 1000000)
+        total += grid.distance(i1, j1, i2, j2, 2)
 
-print(total1 // 2) # // -> floored division
-
-# part 2
-print(total2 // 2)
+print(total // 2) # // -> floored division
