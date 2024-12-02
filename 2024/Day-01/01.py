@@ -1,8 +1,8 @@
 import unittest, os
 
 def read_input(filename: str) -> tuple[list[int], list[int]]:
-    left: int = []
-    right: int = []
+    left: list[int] = []
+    right: list[int] = []
     
     with open(filename, 'r') as f:
         for line in f.readlines():
@@ -22,8 +22,8 @@ def main(left: list[int], right: list[int]) -> int:
 class TestTotalDistance(unittest.TestCase):
     def test_example_case(self):
         # Test case using the example numbers
-        left = [3, 4, 2, 1, 3, 3]
-        right = [4, 3, 5, 3, 9, 3]
+        left: list[int] = [3, 4, 2, 1, 3, 3]
+        right: list[int] = [4, 3, 5, 3, 9, 3]
         expected = 11
         self.assertEqual(main(left, right), expected)
 
