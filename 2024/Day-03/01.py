@@ -15,7 +15,7 @@ def get_result(s, pattern:str) -> int:
 
 def main(data: str) -> int:
     pattern: str = r'mul\(\d\d?\d?,\d\d?\d?\)'
-    return(get_result(data, pattern=pattern))
+    return get_result(data, pattern=pattern)
 
 class TestGetResult(unittest.TestCase):
     def test_example(self):
