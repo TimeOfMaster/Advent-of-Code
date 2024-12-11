@@ -1,6 +1,7 @@
 from math import log10
 import os, unittest
 from functools import lru_cache
+from itertools import repeat
 
 def read_input(filename: str) -> list[int]:
     numbers: list[int] = []
@@ -9,7 +10,7 @@ def read_input(filename: str) -> list[int]:
     return numbers
 
 @lru_cache(None)
-def calc(n: int, blinks: int=25) -> int:
+def calc(n: int, blinks: int) -> int:
 	if blinks == 0:
 		return 1
 
@@ -23,15 +24,26 @@ def calc(n: int, blinks: int=25) -> int:
 
 	return calc(n * 2024, blinks - 1)
 
-def main(numbers: list[int]) -> int:
-    total1 = sum(map(calc, numbers))
-    total2 = sum(calc(n, 75) for n in numbers)
-    print (total2)
-    return total1
+def main(numbers: list[int], blinks: int=25) -> int:
+    return sum(map(calc, numbers, repeat(blinks)))
+
+class TestStoneTransformation(unittest.TestCase):
+    
+    def test_single_blink_example(self):
+        initial: list[int] = [0, 1, 10, 99, 999]
+        expected_after_1: int = sum([1, 2024, 1, 0, 9, 9, 2021976])
+        result: int = main(initial, 1)
+        self.assertEqual(result, expected_after_1)
+    
+    def test_large_number_of_blinks(self):
+        initial: list[int] = [125, 17]
+        result: int = main(initial, 25)
+        self.assertEqual(len(result), 55312)
 
 if __name__ == "__main__":
 	input_file: str = os.path.dirname(os.path.abspath(__file__)) + r"\\input.txt"
 	data: list[int] = read_input(input_file)
+ 
 	print(f"Part 1: {main(data)}")
 	
 	unittest.main()
