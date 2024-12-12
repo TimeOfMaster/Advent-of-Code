@@ -50,36 +50,18 @@ def main(length: int, width: int, grid: list[str]) -> int:
             for j in range(i+1, len(antenna_group)):
                 a2 = antenna_group[j]
                 vec = a2-a1
-
-                anti1 = vec + a2
-                anti2 = a1 - vec
-                if anti1.is_inbounds(length=length, width=width):
-                    antinodes.add(anti1)
-                if anti2.is_inbounds(length=length, width=width):
-                    antinodes.add(anti2)
+                
+                gcd_vec = vec.get_gcd_vec()
+                temp = a1
+                while temp.is_inbounds(length=length, width=width):
+                    antinodes.add(temp)
+                    temp += gcd_vec
+                temp = a1
+                while temp.is_inbounds(length=length, width=width):
+                    antinodes.add(temp)
+                    temp -= gcd_vec
     return len(antinodes)
 
-class TestAntinodeCalculation(unittest.TestCase):
-    def test_example_case(self):
-        grid: list[str] = [
-            "............",
-            "........0...",
-            ".....0......",
-            ".......0....",
-            "....0.......",
-            "......A.....",
-            "............",
-            "............",
-            "........A...",
-            ".........A..",
-            "............",
-            "............"
-        ]
-        length: int = len(grid)
-        width: int = len(grid[0])
-        expected_antinode_count: int = 14
-        result: int = main(length, width, grid)
-        self.assertEqual(result, expected_antinode_count)
 
 if __name__ == "__main__":
     input_file: str = os.path.dirname(os.path.abspath(__file__)) + r"\\input.txt"
@@ -89,6 +71,4 @@ if __name__ == "__main__":
     width: int = data[1]
     grid: list[str] = data[2]
     
-    print(f"Part 1: {main(length, width, grid)}")
-    
-    unittest.main()
+    print(f"Part 2: {main(length, width, grid)}")
