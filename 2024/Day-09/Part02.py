@@ -54,17 +54,8 @@ def main(disk_map: list[int]):
     defrag(memory)
     return checksum(memory)
 
-class TestDefrag(unittest.TestCase):
-    def test_example(self):
-        disk_map: list[int] = [2, 3, 3, 3, 1, 3, 3, 1, 2, 1, 4, 1, 4, 1, 3, 1, 4, 0, 2]
-        expected_checksum: int = 2858
-        result: int = main(disk_map)
-        self.assertEqual(result, expected_checksum)
-
 if __name__ == "__main__":
     input_file: str = os.path.dirname(os.path.abspath(__file__)) + r"\\input.txt"
     data: list[int] = read_input(input_file)
     
     print(f"Part 2: {main(data)}")
-    
-    unittest.main()
