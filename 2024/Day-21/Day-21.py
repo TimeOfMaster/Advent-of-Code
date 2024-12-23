@@ -79,5 +79,3 @@ if __name__ == '__main__':
 
     print(f"Part 1: {main(codes=codes, num_robots=3)}")
     print(f"Part 2: {main(codes=codes, num_robots=26)}")
-
-    
