@@ -2,8 +2,8 @@ import unittest, os
 from collections import Counter
 
 def read_input(filename: str) -> tuple[list[int], list[int]]:
-    left: int = []
-    right: int = []
+    left: list[int] = []
+    right: list[int] = []
     
     with open(filename, 'r') as f:
         for line in f.readlines():
