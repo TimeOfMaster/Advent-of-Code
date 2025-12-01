@@ -35,3 +35,8 @@ Example: `uv run setup_day.py 1` creates `Day-01` folder with template files and
 - Or create a `.session` file in the project root
 
 Get your session cookie from browser DevTools after logging in to [adventofcode.com](https://adventofcode.com/).
+
+Additionally, you can specify the year with `-y <year>`. The default is the current year.
+Example: `uv run setup_day.py 1 -y 2022`
+Or you can just fetch the input for an existing day with `-f` or `--fetch-only`:
+Example `python setup_day.py 1 -f`
