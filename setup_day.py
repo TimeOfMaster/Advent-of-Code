@@ -129,14 +129,16 @@ def setup_day(year: int, day: int, session_cookie: str | None = None, template_n
     # Define paths
     script_dir = Path(__file__).parent
     year_dir = script_dir / str(year)
-    day_folder = year_dir / f"Day-{day:02d}"
     
-    # Determine template directory
+    # Determine template directory and language suffix
+    language_suffix = None
     if template_name is None:
         # Default: look for default language in year-specific template
         # First, check if there's a python subfolder (preferred default)
         template_dir = year_dir / "template" / "python"
-        if not template_dir.exists():
+        if template_dir.exists():
+            language_suffix = "python"
+        else:
             # Fall back to template root
             template_dir = year_dir / "template"
     elif '-' in template_name:
@@ -145,9 +147,17 @@ def setup_day(year: int, day: int, session_cookie: str | None = None, template_n
         template_year = parts[0]
         language = parts[1]
         template_dir = script_dir / template_year / "template" / language
+        language_suffix = language
     else:
         # Use global template
         template_dir = script_dir / f"template-{template_name}"
+        language_suffix = template_name
+    
+    # Create day folder name with language suffix
+    if language_suffix:
+        day_folder = year_dir / f"Day-{day:02d}-{language_suffix}"
+    else:
+        day_folder = year_dir / f"Day-{day:02d}"
     
     # Check if template exists
     if not template_dir.exists():
@@ -183,7 +193,7 @@ def setup_day(year: int, day: int, session_cookie: str | None = None, template_n
     
     return True
 
-def fetch_input_only(year: int, day: int, session_cookie: str | None = None):
+def fetch_input_only(year: int, day: int, session_cookie: str | None = None, language: str | None = None):
     """
     Fetch puzzle input only (without creating day folder).
     
@@ -191,6 +201,7 @@ def fetch_input_only(year: int, day: int, session_cookie: str | None = None):
         year: The year (e.g., 2025)
         day: The day number (1-25)
         session_cookie: Optional session cookie for authentication
+        language: Optional language suffix for finding the correct day folder
     """
     # Validate inputs
     if not (1 <= day <= 25):
@@ -200,7 +211,24 @@ def fetch_input_only(year: int, day: int, session_cookie: str | None = None):
     # Define paths
     script_dir = Path(__file__).parent
     year_dir = script_dir / str(year)
-    day_folder = year_dir / f"Day-{day:02d}"
+    
+    # Try to find the day folder with or without language suffix
+    if language:
+        day_folder = year_dir / f"Day-{day:02d}-{language}"
+    else:
+        # Try without language suffix first
+        day_folder = year_dir / f"Day-{day:02d}"
+        # If not found, look for folders with language suffix
+        if not day_folder.exists():
+            pattern = f"Day-{day:02d}-*"
+            matches = list(year_dir.glob(pattern))
+            if matches:
+                if len(matches) == 1:
+                    day_folder = matches[0]
+                else:
+                    print(f"Error: Multiple day folders found: {[f.name for f in matches]}")
+                    print("Please specify language with -t option")
+                    return False
     
     # Check if day folder exists
     if not day_folder.exists():
@@ -256,9 +284,16 @@ def main():
     if args.day is None:
         parser.error("the following arguments are required: day")
     
+    # Extract language from template for fetch-only operations
+    language = None
+    if args.template and '-' in args.template:
+        language = args.template.split('-', 1)[1]
+    elif args.template:
+        language = args.template
+    
     if args.fetch_only:
         print(f"=== Fetching Input for {args.year} Day {args.day} ===\n")
-        success = fetch_input_only(args.year, args.day, args.session)
+        success = fetch_input_only(args.year, args.day, args.session, language)
     else:
         print(f"=== Advent of Code {args.year} - Day {args.day} Setup ===\n")
         if args.template:
