@@ -1,4 +1,4 @@
-import 'dart:io';
+import "dart:io";
 
 /// Read and parse input file
 List<String> readInput(String filename) {
@@ -13,8 +13,8 @@ dynamic solve(List<String> data) {
 
 void main() {
   final scriptDir = File(Platform.script.toFilePath()).parent.path;
-  final inputFile = '$scriptDir${Platform.pathSeparator}input.txt';
+  final inputFile = "$scriptDir${Platform.pathSeparator}input.txt";
   final data = readInput(inputFile);
 
-  print('Part 1: ${solve(data)}');
+  print("Part 1: ${solve(data)}");
 }
