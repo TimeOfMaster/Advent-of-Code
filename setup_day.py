@@ -230,7 +230,7 @@ def main():
     parser = argparse.ArgumentParser(
         description='Setup Advent of Code day folder with template and input'
     )
-    parser.add_argument('day', type=int, help='Day number (1-25)')
+    parser.add_argument('day', type=int, nargs='?', help='Day number (1-25)')
     parser.add_argument('-y', '--year', type=int, default=current_year, 
                        help=f'Year (default: {current_year})')
     parser.add_argument('-s', '--session', type=str,
@@ -251,6 +251,10 @@ def main():
         for template in available:
             print(f"  - {template}")
         return
+    
+    # Ensure day is provided for operations that need it
+    if args.day is None:
+        parser.error("the following arguments are required: day")
     
     if args.fetch_only:
         print(f"=== Fetching Input for {args.year} Day {args.day} ===\n")
