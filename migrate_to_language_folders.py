@@ -19,7 +19,7 @@ def find_day_folders(year_dir: Path) -> list[Path]:
     Returns:
         List of day folder paths that need migration
     """
-    folders = []
+    folders: list[Path] = []
     if not year_dir.exists() or not year_dir.is_dir():
         return folders
     
