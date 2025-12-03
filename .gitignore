@@ -1,1 +1,4 @@
 .session
+**/__pycache__/
+**/input.txt
+**/task.md

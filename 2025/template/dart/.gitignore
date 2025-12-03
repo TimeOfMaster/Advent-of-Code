@@ -1,0 +1,7 @@
+# Dart specific
+.dart_tool/
+.packages
+pubspec.lock
+
+# Input file
+input.txt

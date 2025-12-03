@@ -85,7 +85,33 @@ def fetch_input(year: int, day: int, output_path: Path, session_cookie: str | No
         print(f"  {output_path}")
         return False
 
-def setup_day(year: int, day: int, session_cookie: str | None = None):
+def get_available_templates(script_dir: Path) -> list[str]:
+    """
+    Get list of available template directories.
+    
+    Args:
+        script_dir: Root directory of the project
+    
+    Returns:
+        List of template names found in the project
+    """
+    templates = []
+    # Look for template directories in project root
+    for item in script_dir.iterdir():
+        if item.is_dir() and item.name.startswith('template-'):
+            templates.append(item.name.replace('template-', ''))
+    # Also check for year-specific templates with subfolders
+    for year_dir in script_dir.iterdir():
+        if year_dir.is_dir() and year_dir.name.isdigit():
+            template_dir = year_dir / "template"
+            if template_dir.exists():
+                # Check for language subfolders
+                for lang_dir in template_dir.iterdir():
+                    if lang_dir.is_dir():
+                        templates.append(f"{year_dir.name}-{lang_dir.name}")
+    return sorted(set(templates))
+
+def setup_day(year: int, day: int, session_cookie: str | None = None, template_name: str | None = None):
     """
     Set up a new Advent of Code day folder with template files and input.
     
@@ -93,6 +119,7 @@ def setup_day(year: int, day: int, session_cookie: str | None = None):
         year: The year (e.g., 2025)
         day: The day number (1-25)
         session_cookie: Optional session cookie for authentication
+        template_name: Name of template to use (e.g., 'python', 'dart')
     """
     # Validate inputs
     if not (1 <= day <= 25):
@@ -102,12 +129,33 @@ def setup_day(year: int, day: int, session_cookie: str | None = None):
     # Define paths
     script_dir = Path(__file__).parent
     year_dir = script_dir / str(year)
-    template_dir = year_dir / "template"
     day_folder = year_dir / f"Day-{day:02d}"
+    
+    # Determine template directory
+    if template_name is None:
+        # Default: look for default language in year-specific template
+        # First, check if there's a python subfolder (preferred default)
+        template_dir = year_dir / "template" / "python"
+        if not template_dir.exists():
+            # Fall back to template root
+            template_dir = year_dir / "template"
+    elif '-' in template_name:
+        # Format: year-language (e.g., 2025-python, 2024-rust)
+        parts = template_name.split('-', 1)
+        template_year = parts[0]
+        language = parts[1]
+        template_dir = script_dir / template_year / "template" / language
+    else:
+        # Use global template
+        template_dir = script_dir / f"template-{template_name}"
     
     # Check if template exists
     if not template_dir.exists():
         print(f"Error: Template directory not found at {template_dir}")
+        available = get_available_templates(script_dir)
+        if available:
+            print(f"\nAvailable templates: {', '.join(available)}")
+            print(f"Use -t <template> to specify a template")
         return False
     
     # Create day folder
@@ -177,6 +225,7 @@ def main():
     from datetime import datetime
     
     current_year = datetime.now().year
+    script_dir = Path(__file__).parent
     
     parser = argparse.ArgumentParser(
         description='Setup Advent of Code day folder with template and input'
@@ -186,17 +235,31 @@ def main():
                        help=f'Year (default: {current_year})')
     parser.add_argument('-s', '--session', type=str,
                        help='Session cookie for authentication')
+    parser.add_argument('-t', '--template', type=str,
+                       help='Template to use (e.g., python, dart). Default: year-specific template')
     parser.add_argument('-f', '--fetch-only', action='store_true',
                        help='Only fetch input (day folder must already exist)')
+    parser.add_argument('-l', '--list-templates', action='store_true',
+                       help='List available templates and exit')
     
     args = parser.parse_args()
+    
+    # Handle list templates
+    if args.list_templates:
+        available = get_available_templates(script_dir)
+        print("Available templates:")
+        for template in available:
+            print(f"  - {template}")
+        return
     
     if args.fetch_only:
         print(f"=== Fetching Input for {args.year} Day {args.day} ===\n")
         success = fetch_input_only(args.year, args.day, args.session)
     else:
         print(f"=== Advent of Code {args.year} - Day {args.day} Setup ===\n")
-        success = setup_day(args.year, args.day, args.session)
+        if args.template:
+            print(f"Using template: {args.template}\n")
+        success = setup_day(args.year, args.day, args.session, args.template)
         
         if success:
             print("\n✓ Setup complete!")
