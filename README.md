@@ -23,10 +23,15 @@ The tasks are found on the [AoC Website](https://adventofcode.com/)
 To create a new day folder with template files and automatically fetch the puzzle input:
 
 ```bash
-uv run setup_day.py <day>
+uv run setup_day.py <day> -t <template>
 ```
 
-Example: `uv run setup_day.py 1` creates `Day-01` folder with template files and downloads the input.
+Example: `uv run setup_day.py 1 -t python` creates `Day-01-python` folder with template files and downloads the input.
+
+**Template Options:**
+- Use `-t python` for Python solutions (default for 2025)
+- Use `-t dart` for Dart solutions
+- Use `-l` to list all available templates: `uv run setup_day.py -l`
 
 **Authentication:** To automatically fetch inputs, set your session cookie:
 
@@ -36,7 +41,21 @@ Example: `uv run setup_day.py 1` creates `Day-01` folder with template files and
 
 Get your session cookie from browser DevTools after logging in to [adventofcode.com](https://adventofcode.com/).
 
-Additionally, you can specify the year with `-y <year>`. The default is the current year.
-Example: `uv run setup_day.py 1 -y 2022`
-Or you can just fetch the input for an existing day with `-f` or `--fetch-only`:
-Example `python setup_day.py 1 -f`
+**Additional Options:**
+- Specify year with `-y <year>` (default: current year)  
+  Example: `uv run setup_day.py 1 -y 2022 -t python`
+- Fetch input only for existing day with `-f` or `--fetch-only`:  
+  Example: `uv run setup_day.py 1 -f -t python`
+
+## Run Day
+
+To run a solution for 2025 (which uses a uv workspace):
+
+```bash
+cd 2025/Day-XX-python
+uv run PartYY.py
+```
+
+Example: `cd 2025/Day-12-python` then `uv run Part01.py`
+
+This will automatically install the day's dependencies and execute the solution.
