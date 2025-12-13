@@ -10,6 +10,7 @@ import Part01, Part02, unittest
 
 
 class TestDay07(unittest.TestCase):
+
     def setUp(self):
         """Set up test data for the example manifold."""
         self.example_input = [

@@ -8,6 +8,7 @@ grid, and cannot overlap; empty dots in a shape do not block other presents.
 
 import os
 
+
 def read_input(file_path: str) -> list[str]:
     """Read the puzzle input file into a list of lines.
 
@@ -17,13 +18,14 @@ def read_input(file_path: str) -> list[str]:
     Returns:
         list[str]: Lines of the puzzle input.
     """
-    
+
     data: list[str] = []
-    
+
     with open(file_path, "r") as f:
         data = f.read().splitlines()
-    
+
     return data
+
 
 def calculate_answer(data: list[str]) -> int:
     """Compute how many regions can fit all presents (simplified check).
@@ -34,9 +36,9 @@ def calculate_answer(data: list[str]) -> int:
     Returns:
         int: Count of regions that satisfy the placement condition.
     """
-    
+
     answer: int = 0
-    
+
     for line in data:
         if "x" in line:
             parts: list[str] = line.strip().split()
@@ -44,8 +46,9 @@ def calculate_answer(data: list[str]) -> int:
             area: int = size[0] * size[1]
             presents: int = sum([int(x) for x in parts[1:]])
             answer += 1 if area >= presents * 9 else 0
-    
+
     return answer
+
 
 def main(data: list[str]) -> int:
     """Entry point: run the Part 1 calculation.
@@ -56,13 +59,13 @@ def main(data: list[str]) -> int:
     Returns:
         int: The Part 1 answer.
     """
-    
+
     result: int = calculate_answer(data)
     return result
+
 
 if __name__ == "__main__":
     input_file: str = os.path.dirname(os.path.abspath(__file__)) + r"\\input.txt"
     data: list[str] = read_input(input_file)
-    
-    print(f"Part 1: {main(data)}")
 
+    print(f"Part 1: {main(data)}")
